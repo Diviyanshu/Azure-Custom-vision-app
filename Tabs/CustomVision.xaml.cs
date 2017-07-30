@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using Plugin.Geolocator;
 using Tabs.DataModels;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace Tabs
 {
@@ -49,8 +50,9 @@ namespace Tabs
             {
                 return file.GetStream();
             });
-            await postLocationAsync();
             await MakePredictionRequest(file);
+            await postLocationAsync();
+            
         }
 
         async Task postLocationAsync()
@@ -82,7 +84,7 @@ namespace Tabs
             return binaryReader.ReadBytes((int)stream.Length);
         }
 
-
+        
         async Task MakePredictionRequest(MediaFile file)
         {
             var c = new HttpClient();
@@ -104,7 +106,7 @@ namespace Tabs
                     var responseString = await res.Content.ReadAsStringAsync();
                     JObject recived = JObject.Parse(responseString);
                     var Probabilitystring = from p in recived["Predictions"] select (string)p["Probability"];
-
+                    
                     var Tagstring = from p in recived["Predictions"] select (string)p["Tag"];
                     double temp;
                     string result;

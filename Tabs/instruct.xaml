@@ -16,10 +16,10 @@
             <Label Text="Steps: " Font="Bold,40" VerticalOptions="Start" HorizontalOptions="Center" />
         </StackLayout>
 
-        <Label  Text="1. Go to camera and take a picture " VerticalOptions="Start"  Font="20"   >   </Label>
+        <Label  Text="1. Go to camera tab and take a picture " VerticalOptions="Start"  Font="20"   >   </Label>
 
         <Label Text="2. Wait for calculation of prediction probability." Font="20"     >  </Label>
-        <Label Text="3. Go to Information tab and view photo data." Font="20"        ></Label>
+        <Label Text="3. Go to Information tab and view photo location data." Font="20"        ></Label>
 
 
         

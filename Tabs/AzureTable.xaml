@@ -4,18 +4,22 @@
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness" iOS="0, 20, 0, 0" />
     </ContentPage.Padding>
+   
     <ContentPage.Content>
-        <StackLayout>
+     <StackLayout>
             <Button Text="See Photo Location" TextColor="White" BackgroundColor="Gray" Clicked="Handle_ClickedAsync" />
-            <ListView x:Name="LocList" HasUnevenRows="True">
+            
+         
+         <ListView x:Name="LocList" HasUnevenRows="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal">
-                                <Label Text="{Binding Longitude, StringFormat='Longitude: {0:N}'}" HorizontalOptions="FillAndExpand" Margin="20,0,0,0" VerticalTextAlignment="Center" />
                                 <Label Text="{Binding Latitude, StringFormat='Latitude: {0:N}'}" VerticalTextAlignment="Center" Margin="0,0,20,0" />
+                                <Label Text="{Binding Longitude, StringFormat='Longitude: {0:N}'}" HorizontalOptions="End" Margin="20,0,0,0" VerticalTextAlignment="Center" />
                                 
-                            </StackLayout>
+                                
+                      </StackLayout>
                             
                         </ViewCell>
                     </DataTemplate>
