@@ -4,14 +4,15 @@
     
   <ContentPage.Content>
         
-        <Label Text="Custom Vision Tab" VerticalOptions="Center" HorizontalOptions="Center" />
-
+        <Label Text="Camera tab" VerticalOptions="Center" HorizontalOptions="Center" />
 </ContentPage.Content>
 
-    <StackLayout Margin="20" Orientation="Vertical">
-        <Button Text="Take and examine picture" TextColor="White" BackgroundColor="Gray" Clicked="loadCamera" />
+    <StackLayout Margin="25" Orientation="Vertical">
+        
+        <Button Text="Take and examine picture" TextColor="White" BackgroundColor="Gray" Clicked="loadphoneCamera" />
 
-        <StackLayout Orientation="Horizontal">
+        <StackLayout Orientation="Horizontal" >
+
             <Label x:Name="TagLabel">
             </Label>
             <Label x:Name="PredictionLabel">

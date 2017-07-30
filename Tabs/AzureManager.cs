@@ -17,8 +17,6 @@ namespace Tabs
         private AzureManager()
         {
             this.client = new MobileServiceClient("http://dogornot8888.azurewebsites.net");
-            var q = 5;
-             
             this.MyTable = this.client.GetTable<DogModel>();
         }
 
@@ -41,11 +39,11 @@ namespace Tabs
             }
         }
 
-        public async Task<List<DogModel>> GetHotDogInformation()
+        public async Task<List<DogModel>> GetInfo()
         {
             return await this.MyTable.ToListAsync();
         }
-        public async Task PostHotDogInformation(DogModel DogModel)
+        public async Task PostInfo(DogModel DogModel)
         {
             await this.MyTable.InsertAsync(DogModel);
         }

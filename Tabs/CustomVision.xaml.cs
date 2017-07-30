@@ -24,7 +24,7 @@ namespace Tabs
             InitializeComponent();
         }
 
-        private async void loadCamera(object sender, EventArgs e)
+        private async void loadphoneCamera(object sender, EventArgs e)
         {
             await CrossMedia.Current.Initialize();
 
@@ -39,7 +39,8 @@ namespace Tabs
                 PhotoSize = PhotoSize.Medium,
                 Directory = "Sample",
                 Name = $"{DateTime.UtcNow}.jpg"
-            });
+            }
+            );
 
             if (file == null)
                 return;
@@ -56,7 +57,7 @@ namespace Tabs
         {
 
             var locator = CrossGeolocator.Current;
-            locator.DesiredAccuracy = 50;
+            locator.DesiredAccuracy = 30;
 
             var position = await locator.GetPositionAsync(TimeSpan.FromMilliseconds(10000));
 
@@ -67,61 +68,60 @@ namespace Tabs
 
             };
 
-            await AzureManager.AzureManagerInstance.PostHotDogInformation(model);
+            await AzureManager.AzureManagerInstance.PostInfo(model);
         }
 
 
 
 
 
-        static byte[] GetImageAsByteArray(MediaFile file)
+        static byte[] GetByteArray(MediaFile file)
         {
             var stream = file.GetStream();
             BinaryReader binaryReader = new BinaryReader(stream);
             return binaryReader.ReadBytes((int)stream.Length);
         }
-        
+
+
         async Task MakePredictionRequest(MediaFile file)
         {
-            var client = new HttpClient();
-
-            client.DefaultRequestHeaders.Add("Prediction-Key", "7b8c0ade1a6b40928ebc64344757a657");
+            var c = new HttpClient();
+            HttpResponseMessage res;
+            c.DefaultRequestHeaders.Add("Prediction-Key", "7b8c0ade1a6b40928ebc64344757a657");
 
             string url = "https://southcentralus.api.cognitive.microsoft.com/customvision/v1.0/Prediction/e0a6a1d1-1c4b-4a13-a718-62ecc7a5b584/image?iterationId=7d4d7c49-617d-452a-83e0-d61923184510";
 
-            HttpResponseMessage response;
+            byte[] byteData = GetByteArray(file);
 
-            byte[] byteData = GetImageAsByteArray(file);
-
-            using (var content = new ByteArrayContent(byteData))
+            using (var info = new ByteArrayContent(byteData))
             {
+                info.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                res = await c.PostAsync(url, info);
 
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                response = await client.PostAsync(url, content);
 
-
-                if (response.IsSuccessStatusCode)
+                if (res.IsSuccessStatusCode)
                 {
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    JObject rss = JObject.Parse(responseString);
-                    var Probability = from p in rss["Predictions"] select (string)p["Probability"];
+                    var responseString = await res.Content.ReadAsStringAsync();
+                    JObject recived = JObject.Parse(responseString);
+                    var Probabilitystring = from p in recived["Predictions"] select (string)p["Probability"];
 
-                    var Tag = from p in rss["Predictions"] select (string)p["Tag"];
+                    var Tagstring = from p in recived["Predictions"] select (string)p["Tag"];
                     double temp;
                     string result;
-                    foreach (var item in Tag) {TagLabel.Text += item + ":\n";    }
-                    foreach (var item in Probability) {PredictionLabel.Text += ( temp = Double.Parse(item, CultureInfo.InvariantCulture)).ToString("N2", CultureInfo.InvariantCulture) + "%" + "\n"; }
+
+                    foreach (var i in Tagstring) {TagLabel.Text += i + ":\n";    }
+                    foreach (var i in Probabilitystring) {PredictionLabel.Text += ( temp = Double.Parse(i, CultureInfo.InvariantCulture)).ToString("N2", CultureInfo.InvariantCulture) + "% Probability" + "\n"; }
 
                     
-                    //EvaluationModel responseModel = JsonConvert.DeserializeObject<EvaluationModel>(responseString);
+                    
                     //--Math.Round(Convert.ToDecimal(TagLabel.Text), 2);
-                    //double max = responseModel.Predictions.Max(m => m.Probability);
-                    //--String TagLabel = TagLabel.ToString();
-                    //TagLabel.Text = (max >= 0.4) ? "Its a dog!" : "Not a dog :(";
+                    
+                    
+                    
 
                 }
 
-                //Get rid of file once we have finished using it
+              
                 file.Dispose();
             }
         }

@@ -19,28 +19,12 @@ namespace Tabs
 
         async void Handle_ClickedAsync(object sender, System.EventArgs e)
         {
-            List<DogModel> dogornot8888 = await AzureManager.AzureManagerInstance.GetHotDogInformation();
+            List<DogModel> dogornot8888 = await AzureManager.AzureManagerInstance.GetInfo();
             
-            HotDogList.ItemsSource = dogornot8888;
-            //await PostLocationAsync();
+            LocList.ItemsSource = dogornot8888;
+            
         }
 
-       // async Task PostLocationAsync()
-       // {
-
-           // var locator = CrossGeolocator.Current;
-           // locator.DesiredAccuracy = 50;
-
-           // var position = await locator.GetPositionAsync(TimeSpan.FromMilliseconds(10000));
-
-           // DogModel model = new DogModel()
-           // {
-               // Longitude = (float)position.Longitude,
-               // Latitude = (float)position.Latitude
-
-           // };
-
-            //await AzureManager.AzureManagerInstance.PostHotDogInformation(model);
-        //}
+      
     }
 }
