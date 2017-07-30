@@ -22,25 +22,25 @@ namespace Tabs
             List<DogModel> dogornot8888 = await AzureManager.AzureManagerInstance.GetHotDogInformation();
             
             HotDogList.ItemsSource = dogornot8888;
-            await PostLocationAsync();
+            //await PostLocationAsync();
         }
 
-        async Task PostLocationAsync()
-        {
+       // async Task PostLocationAsync()
+       // {
 
-            var locator = CrossGeolocator.Current;
-            locator.DesiredAccuracy = 50;
+           // var locator = CrossGeolocator.Current;
+           // locator.DesiredAccuracy = 50;
 
-            var position = await locator.GetPositionAsync(TimeSpan.FromMilliseconds(10000));
+           // var position = await locator.GetPositionAsync(TimeSpan.FromMilliseconds(10000));
 
-            DogModel model = new DogModel()
-            {
-                Longitude = (float)position.Longitude,
-                Latitude = (float)position.Latitude
+           // DogModel model = new DogModel()
+           // {
+               // Longitude = (float)position.Longitude,
+               // Latitude = (float)position.Latitude
 
-            };
+           // };
 
-            await AzureManager.AzureManagerInstance.PostHotDogInformation(model);
-        }
+            //await AzureManager.AzureManagerInstance.PostHotDogInformation(model);
+        //}
     }
 }

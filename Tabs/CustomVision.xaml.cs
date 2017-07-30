@@ -10,6 +10,10 @@ using Plugin.Media;
 using Plugin.Media.Abstractions;
 using Tabs.Model;
 using Xamarin.Forms;
+using Newtonsoft.Json.Linq;
+using Plugin.Geolocator;
+using Tabs.DataModels;
+using System.Globalization;
 
 namespace Tabs
 {
@@ -44,9 +48,31 @@ namespace Tabs
             {
                 return file.GetStream();
             });
-            
+            await postLocationAsync();
             await MakePredictionRequest(file);
         }
+
+        async Task postLocationAsync()
+        {
+
+            var locator = CrossGeolocator.Current;
+            locator.DesiredAccuracy = 50;
+
+            var position = await locator.GetPositionAsync(TimeSpan.FromMilliseconds(10000));
+
+            DogModel model = new DogModel()
+            {
+                Longitude = (float)position.Longitude,
+                Latitude = (float)position.Latitude
+
+            };
+
+            await AzureManager.AzureManagerInstance.PostHotDogInformation(model);
+        }
+
+
+
+
 
         static byte[] GetImageAsByteArray(MediaFile file)
         {
@@ -54,7 +80,7 @@ namespace Tabs
             BinaryReader binaryReader = new BinaryReader(stream);
             return binaryReader.ReadBytes((int)stream.Length);
         }
-
+        
         async Task MakePredictionRequest(MediaFile file)
         {
             var client = new HttpClient();
@@ -77,12 +103,21 @@ namespace Tabs
                 if (response.IsSuccessStatusCode)
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
+                    JObject rss = JObject.Parse(responseString);
+                    var Probability = from p in rss["Predictions"] select (string)p["Probability"];
 
-                    EvaluationModel responseModel = JsonConvert.DeserializeObject<EvaluationModel>(responseString);
+                    var Tag = from p in rss["Predictions"] select (string)p["Tag"];
+                    double temp;
+                    string result;
+                    foreach (var item in Tag) {TagLabel.Text += item + ":\n";    }
+                    foreach (var item in Probability) {PredictionLabel.Text += ( temp = Double.Parse(item, CultureInfo.InvariantCulture)).ToString("N2", CultureInfo.InvariantCulture) + "%" + "\n"; }
 
-                    double max = responseModel.Predictions.Max(m => m.Probability);
-
-                    TagLabel.Text = (max >= 0.5) ? "Its a dog!" : "Not a dog :(";
+                    
+                    //EvaluationModel responseModel = JsonConvert.DeserializeObject<EvaluationModel>(responseString);
+                    //--Math.Round(Convert.ToDecimal(TagLabel.Text), 2);
+                    //double max = responseModel.Predictions.Max(m => m.Probability);
+                    //--String TagLabel = TagLabel.ToString();
+                    //TagLabel.Text = (max >= 0.4) ? "Its a dog!" : "Not a dog :(";
 
                 }
 

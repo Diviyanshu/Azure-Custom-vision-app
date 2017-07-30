@@ -5,25 +5,27 @@ using Microsoft.WindowsAzure.MobileServices;
 using Tabs.DataModels;
 
 namespace Tabs
-{
+{ 
     public class AzureManager
     {
+        public string name = "";
 
         private static AzureManager instance;
         private MobileServiceClient client;
-        private IMobileServiceTable<DogModel> notHotDogTable;
+        private IMobileServiceTable<DogModel> MyTable;
 
         private AzureManager()
         {
             this.client = new MobileServiceClient("http://dogornot8888.azurewebsites.net");
             var q = 5;
-
-            this.notHotDogTable = this.client.GetTable<DogModel>();
+             
+            this.MyTable = this.client.GetTable<DogModel>();
         }
 
         public MobileServiceClient AzureClient
         {
-            get { return client; }
+            get { return client; } 
+
         }
 
         public static AzureManager AzureManagerInstance
@@ -41,11 +43,11 @@ namespace Tabs
 
         public async Task<List<DogModel>> GetHotDogInformation()
         {
-            return await this.notHotDogTable.ToListAsync();
+            return await this.MyTable.ToListAsync();
         }
-        public async Task PostHotDogInformation(DogModel notHotDogModel)
+        public async Task PostHotDogInformation(DogModel DogModel)
         {
-            await this.notHotDogTable.InsertAsync(notHotDogModel);
+            await this.MyTable.InsertAsync(DogModel);
         }
     }
 }

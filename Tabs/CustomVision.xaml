@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Tabs.CustomVision" Title= "Custom Vision">
-    <ContentPage.Content>
-
-
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Tabs.CustomVision" Title= "Camera" BackgroundColor="Teal">
+    
+    
+  <ContentPage.Content>
+        
         <Label Text="Custom Vision Tab" VerticalOptions="Center" HorizontalOptions="Center" />
 
-
-    </ContentPage.Content>
+</ContentPage.Content>
 
     <StackLayout Margin="20" Orientation="Vertical">
-        <Button Text="Take Photo and Analyze" Clicked="loadCamera" />
+        <Button Text="Take and examine picture" TextColor="White" BackgroundColor="Gray" Clicked="loadCamera" />
 
         <StackLayout Orientation="Horizontal">
             <Label x:Name="TagLabel">
